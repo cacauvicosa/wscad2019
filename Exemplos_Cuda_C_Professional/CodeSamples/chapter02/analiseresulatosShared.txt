@@ -1,0 +1,117 @@
+930 laptop
+30 ms para 32 M 
+
+sum vetor com 32 m
+  33,554,432  FP
+  integer 402,653,184
+         1                   stall_memory_dependency        Issue Stall Reasons (Data Request)      92.88%      92.88%      92.88%
+  
+ 
+10 ops
+  268,435,456 float
+  402,653,184 int
+         1                   stall_memory_dependency        Issue Stall Reasons (Data Request)      89.73%      89.73%      89.73%
+
+
+10 ops + 4 shared + sync
+         1                   stall_memory_dependency        Issue Stall Reasons (Data Request)      85.05%      85.05%      85.05%
+         1                                inst_fp_32                   FP Instructions(Single)   402653184   402653184   402653184
+          1                              inst_integer                      Integer Instructions   973078528   973078528   973078528
+
+
+
+20 ops
+          1                     stall_exec_dependency  Issue Stall Reasons (Execution Dependenc       4.02%       4.02%       4.02%
+          1                   stall_memory_dependency        Issue Stall Reasons (Data Request)      80.98%      80.98%      80.98%
+          1                             stall_texture             Issue Stall Reasons (Texture)       0.00%       0.00%       0.00%
+          1                                stall_sync     Issue Stall Reasons (Synchronization)       4.52%       4.52%       4.52%
+          1                               stall_other               Issue Stall Reasons (Other)       7.09%       7.09%       7.09%
+          1                                inst_fp_32                   FP Instructions(Single)   737,281,190   737281190   737281190
+          1                                inst_fp_64                   FP Instructions(Double)           0           0           0
+          1                              inst_integer                      Integer Instructions   974,518,450   974518450   974518450
+ptxas info    : Function properties for _Z13shared4R20opsPfS_S_i
+    0 bytes stack frame, 0 bytes spill stores, 0 bytes spill loads
+ptxas info    : Used 14 registers, 2048 bytes smem, 348 bytes cmem[0], 4 bytes cmem[2]
+22 ops. 70 Gops/s
+
+734+974+64+32+96+32 = 2 T
+
+24ops 31 ms
+          1                          stall_inst_fetch  Issue Stall Reasons (Instructions Fetch)       4.47%       4.47%       4.47%
+          1                     stall_exec_dependency  Issue Stall Reasons (Execution Dependenc       8.43%       8.43%       8.43%
+          1                   stall_memory_dependency        Issue Stall Reasons (Data Request)      64.63%      64.63%      64.63%
+          1                                stall_sync     Issue Stall Reasons (Synchronization)       5.17%       5.17%       5.17%
+          1                               stall_other               Issue Stall Reasons (Other)      15.68%      15.68%      15.68%
+          1                                inst_fp_32                   FP Instructions(Single)  1,475,606,872  1475606872  1475606872
+          1                                inst_fp_64                   FP Instructions(Double)           0           0           0
+          1                              inst_integer                      Integer Instructions   977,533,610   977533610   977533610
+          1                          inst_bit_convert                  Bit-Convert Instructions           0           0           0
+          1                              inst_control                 Control-Flow Instructions   235,929,868   235929868   235929868
+          1                        inst_compute_ld_st                   Load/Store Instructions   301,989,888   301989888   301989888
+          1                                 inst_misc                         Misc Instructions   672,924,618   672924618   672924618
+     
+1500+977+235+301+672 = 3675 / 0,031 s
+=> 120 Gops
+
+
+40 ops com tan 360 ms
+
+          1                     stall_exec_dependency  Issue Stall Reasons (Execution Dependenc      68.32%      68.32%      68.32%
+          1                   stall_memory_dependency        Issue Stall Reasons (Data Request)       1.20%       1.20%       1.20%
+          1                             stall_texture             Issue Stall Reasons (Texture)       0.00%       0.00%       0.00%
+          1                                stall_sync     Issue Stall Reasons (Synchronization)       2.01%       2.01%       2.01%
+          1                               stall_other               Issue Stall Reasons (Other)      27.13%      27.13%      27.13%
+          1          stall_constant_memory_dependency  Issue Stall Reasons (Immediate constant)       0.00%       0.00%       0.00%
+          1                           stall_pipe_busy           Issue Stall Reasons (Pipe Busy)       0.02%       0.02%       0.02%
+          1                         shared_efficiency                  Shared Memory Efficiency     100.00%     100.00%     100.00%
+          1                        shared_utilization                 Shared Memory Utilization     Low (1)     Low (1)     Low (1)
+          1                                inst_fp_32                   FP Instructions(Single)   838,729,087   838729087   838729087
+          1                                inst_fp_64                   FP Instructions(Double)  3,391,094,776  3391094776  3391094776
+          1                              inst_integer                      Integer Instructions  1,996,108,594  1996108594  1996108594
+          1                          inst_bit_convert                  Bit-Convert Instructions   436,207,616   436207616   436207616
+          1                              inst_control                 Control-Flow Instructions   470,813,186   470813186   470813186
+          1                        inst_compute_ld_st                   Load/Store Instructions   536,870,912   536870912   536870912
+          1                                 inst_misc                         Misc Instructions  1,444,939,003  1444939003  1444939003
+
+	840+3400+2000+436+470+536+1500 = 10 T 
+
+25ops
+         1                     stall_exec_dependency  Issue Stall Reasons (Execution Dependenc      60.29%      60.29%      60.29%
+          1                   stall_memory_dependency        Issue Stall Reasons (Data Request)       5.13%       5.13%       5.13%
+          1                             stall_texture             Issue Stall Reasons (Texture)       0.00%       0.00%       0.00%
+          1                                stall_sync     Issue Stall Reasons (Synchronization)       5.03%       5.03%       5.03%
+          1                               stall_other               Issue Stall Reasons (Other)      27.32%      27.32%      27.32%
+          1          stall_constant_memory_dependency  Issue Stall Reasons (Immediate constant)       0.00%       0.00%       0.00%
+          1                           stall_pipe_busy           Issue Stall Reasons (Pipe Busy)       0.10%       0.10%       0.10%
+          1                         shared_efficiency                  Shared Memory Efficiency     100.00%     100.00%     100.00%
+          1                        shared_utilization                 Shared Memory Utilization     Low (1)     Low (1)     Low (1)
+          1                                inst_fp_32                   FP Instructions(Single)   771,620,907   771620907   771620907
+          1                                inst_fp_64                   FP Instructions(Double)   771,751,936   771751936   771751936
+          1                              inst_integer                      Integer Instructions  1,209,531,900  1209531900  1209531900
+          1                          inst_bit_convert                  Bit-Convert Instructions   134,217,728   134217728   134217728
+          1                              inst_control                 Control-Flow Instructions   134,741,844   134741844   134741844
+          1                        inst_compute_ld_st                   Load/Store Instructions   335,544,320   335544320   335544320
+          1                                 inst_misc                         Misc Instructions   436,469,674   436469674   436469674
+
+771 + 771 + 1200 + 134 + 134 + 335 + 436 = 4 T
+
+15ops
+          1                          stall_inst_fetch  Issue Stall Reasons (Instructions Fetch)       1.55%       1.55%       1.55%
+          1                     stall_exec_dependency  Issue Stall Reasons (Execution Dependenc      61.40%      61.40%      61.40%
+          1                   stall_memory_dependency        Issue Stall Reasons (Data Request)       5.14%       5.14%       5.14%
+          1                             stall_texture             Issue Stall Reasons (Texture)       0.00%       0.00%       0.00%
+          1                                stall_sync     Issue Stall Reasons (Synchronization)       5.03%       5.03%       5.03%
+          1                               stall_other               Issue Stall Reasons (Other)      26.24%      26.24%      26.24%
+          1          stall_constant_memory_dependency  Issue Stall Reasons (Immediate constant)       0.00%       0.00%       0.00%
+          1                           stall_pipe_busy           Issue Stall Reasons (Pipe Busy)       0.08%       0.08%       0.08%
+          1                         shared_efficiency                  Shared Memory Efficiency     100.00%     100.00%     100.00%
+          1                        shared_utilization                 Shared Memory Utilization     Low (1)     Low (1)     Low (1)
+          1                                inst_fp_32                   FP Instructions(Single)   570,294,315   570294315   570294315
+          1                                inst_fp_64                   FP Instructions(Double)   771,751,936   771751936   771751936
+          1                              inst_integer                      Integer Instructions  1,209,531,900  1209531900  1209531900
+          1                          inst_bit_convert                  Bit-Convert Instructions   134,217,728   134217728   134217728
+          1                              inst_control                 Control-Flow Instructions   134,741,844   134741844   134741844
+          1                        inst_compute_ld_st                   Load/Store Instructions   335,544,320   335544320   335544320
+          1                                 inst_misc                         Misc Instructions   436,469,674   436469674   436469674
+
+
