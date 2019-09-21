@@ -1,0 +1,1 @@
+Caracteristicas básicas da Arquitetura
