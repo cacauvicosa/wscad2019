@@ -81,7 +81,7 @@ __global__ void poly_div8(float* poli, const int N) {
 }
 
 int main() {
-    int nElem = 1 << POWER;
+    int nElem = 1 << 27;
     float elapsed_time;
 
     // set up device
