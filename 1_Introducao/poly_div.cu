@@ -116,6 +116,7 @@ int main() {
     cudaEventSynchronize(stop);
     // calculate elapsed time
     cudaEventElapsedTime(&elapsed_time, start, stop);
+    printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x/5.0;\n");
     printf("Measured time for parallel execution = %.6fms\n",
            elapsed_time );
 
@@ -128,6 +129,7 @@ int main() {
     cudaEventSynchronize(stop);
     // calculate elapsed time
     cudaEventElapsedTime(&elapsed_time, start, stop);
+    printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x*0.2;\n");
     printf("Measured time for parallel execution = %.6fms\n",
            elapsed_time );
     
@@ -140,6 +142,7 @@ cudaEventCreate(&start);
     cudaEventSynchronize(stop);
     // calculate elapsed time
     cudaEventElapsedTime(&elapsed_time, start, stop);
+printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+5.0/x;\n");
     printf("Measured time for parallel execution = %.6fms\n",
            elapsed_time );
 
