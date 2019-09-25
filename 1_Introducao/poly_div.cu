@@ -111,6 +111,21 @@ int main() {
     cudaEventCreate(&stop);
     // record start event
     cudaEventRecord(start, 0); 
+    poly_div2<<<grid, block>>>(d_polinomy, nElem);
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
+    // calculate elapsed time
+    cudaEventElapsedTime(&elapsed_time, start, stop);
+    printf("poli2[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x*0.2;\n");
+    printf("Measured time for parallel execution = %.6fms\n",
+           elapsed_time );
+    
+    
+    
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    // record start event
+    cudaEventRecord(start, 0); 
     poly_div1<<<grid, block>>>(d_polinomy, nElem);
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
@@ -133,18 +148,6 @@ int main() {
     printf("Measured time for parallel execution = %.6fms\n",
            elapsed_time );
 
-    cudaEventCreate(&start);
-    cudaEventCreate(&stop);
-    // record start event
-    cudaEventRecord(start, 0); 
-    poly_div2<<<grid, block>>>(d_polinomy, nElem);
-    cudaEventRecord(stop, 0);
-    cudaEventSynchronize(stop);
-    // calculate elapsed time
-    cudaEventElapsedTime(&elapsed_time, start, stop);
-    printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x*0.2;\n");
-    printf("Measured time for parallel execution = %.6fms\n",
-           elapsed_time );
     
 cudaEventCreate(&start);
     cudaEventCreate(&stop);
