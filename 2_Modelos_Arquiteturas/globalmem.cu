@@ -52,6 +52,21 @@ __global__ void skip_128b(float *A, float *C, const int N)
 }
 
 
+__global__ void coalesced2(float *A, float *C, const int N)
+{
+    int i = (blockIdx.x * blockDim.x + threadIdx.x)*2;
+
+    if (i+1 < N) { C[i] = A[i]; C[i+1] = A[i+1];}
+}
+
+__global__ void coalesced4(float *A, float *C, const int N)
+{
+    int i = (blockIdx.x * blockDim.x + threadIdx.x)*4;
+
+    if (i+3 < N) { C[i] = A[i]; C[i+1] = A[i+1];
+                   C[i+2] = A[i+2]; C[i+3] = A[i+3];}
+}
+
 
 int main(int argc, char **argv)
 {
@@ -134,7 +149,32 @@ int main(int argc, char **argv)
     CHECK(cudaEventElapsedTime(&elapsed_time, start, stop));
     printf("random - execution time = %.6fms\n",
            elapsed_time ); 
+    dim3 grid2  ((nElem + block.x - 1) / (2*block.x));
+    CHECK(cudaEventCreate(&start));
+    CHECK(cudaEventCreate(&stop));
+    // record start event
+    CHECK(cudaEventRecord(start, 0));     
+    coalesced2<<<grid2, block>>>(d_A, d_C, nElem);
+    CHECK(cudaEventRecord(stop, 0));
+    CHECK(cudaEventSynchronize(stop));
+    // calculate elapsed time
+    CHECK(cudaEventElapsedTime(&elapsed_time, start, stop));
+    printf("Coalesced 2 - execution time = %.6fms\n",
+           elapsed_time );
     
+    
+    dim3 grid4  ((nElem + block.x - 1) / (4*block.x));
+    CHECK(cudaEventCreate(&start));
+    CHECK(cudaEventCreate(&stop));
+    // record start event
+    CHECK(cudaEventRecord(start, 0));     
+    coalesced4<<<grid4, block>>>(d_A, d_C, nElem);
+    CHECK(cudaEventRecord(stop, 0));
+    CHECK(cudaEventSynchronize(stop));
+    // calculate elapsed time
+    CHECK(cudaEventElapsedTime(&elapsed_time, start, stop));
+    printf("Coalesced 4 - execution time = %.6fms\n",
+           elapsed_time ); 
     
     // check kernel error
     CHECK(cudaGetLastError()) ;
