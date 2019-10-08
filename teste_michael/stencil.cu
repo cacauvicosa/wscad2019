@@ -2,25 +2,7 @@
 #include <cuda_runtime_api.h>
 #include <chrono>
 
-#define DEBUG_DEV
-
-#ifdef DEBUG_DEV
-#define getErrorCuda(command)\
-		command;\
-		cudaDeviceSynchronize();\
-		cudaThreadSynchronize();\
-		if (cudaPeekAtLastError() != cudaSuccess){\
-			std::cout << #command << " : " << cudaGetErrorString(cudaGetLastError())\
-			 << " in file " << __FILE__ << " at line " << __LINE__ << std::endl;\
-			exit(1);\
-		}
-#endif
-#ifndef DEBUG_DEV
-#define getErrorCuda(command) command;
-#endif
-
 __constant__ float const_stencilWeight[21];
-
 
 // base case
 __global__ void stencil(float *src, float *dst, int size, float *stencilWeight)
@@ -185,11 +167,11 @@ int main()
     float *bOut;
     float *bCorr;
     float *weights;
-    getErrorCuda(cudaMalloc(&a, sizeof(float)*102400000));
-    getErrorCuda(cudaMalloc(&b, sizeof(float)*102400000));
-    getErrorCuda(cudaMallocHost(&bOut, sizeof(float)*102400000));
-    getErrorCuda(cudaMallocManaged(&bCorr, sizeof(float)*102400000));
-    getErrorCuda(cudaMallocManaged(&weights, sizeof(float)*21));
+    (cudaMalloc(&a, sizeof(float)*102400000));
+    (cudaMalloc(&b, sizeof(float)*102400000));
+    (cudaMallocHost(&bOut, sizeof(float)*102400000));
+    (cudaMallocManaged(&bCorr, sizeof(float)*102400000));
+    (cudaMallocManaged(&weights, sizeof(float)*21));
 
     cudaDeviceSynchronize();    
 
@@ -220,12 +202,12 @@ int main()
     cudaMemcpyToSymbol(const_stencilWeight, weights, sizeof(float)*21);
 
     // run the basic case once to get the "correct" results
-    getErrorCuda((stencil<<<blocks, blockSize>>>(a, bCorr, 10240000, weights)));
+    ((stencil<<<blocks, blockSize>>>(a, bCorr, 10240000, weights)));
     cudaDeviceSynchronize();    
 
-    getErrorCuda((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
+    ((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
     cudaDeviceSynchronize(); 
-    getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+    (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
     verify(bOut, bCorr, 1000);
 
     cudaSetDevice(0); 
@@ -236,11 +218,11 @@ int main()
     {
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
+        ((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -255,11 +237,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilReadOnly1<<<blocks, blockSize>>>(a, b, 10240000, weights)));
+        ((stencilReadOnly1<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -272,11 +254,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilReadOnly2<<<blocks, blockSize>>>(a, b, 10240000, weights)));
+        ((stencilReadOnly2<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -289,11 +271,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilReadOnly3<<<blocks, blockSize>>>(a, b, 10240000, weights)));
+        ((stencilReadOnly3<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -310,11 +292,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilConst1<<<blocks, blockSize>>>(a, b, 10240000)));
+        ((stencilConst1<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
 
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -330,11 +312,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilConst2<<<blocks, blockSize>>>(a, b, 10240000)));
+        ((stencilConst2<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
 
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -350,11 +332,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilShared1<<<blocks, blockSize>>>(a, b, 10240000)));
+        ((stencilShared1<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -368,11 +350,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        getErrorCuda((stencilShared2<<<blocks, blockSize>>>(a, b, 10240000)));
+        ((stencilShared2<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        getErrorCuda(cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
