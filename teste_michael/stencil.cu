@@ -49,7 +49,7 @@ __global__ void stencilReadOnly1(float *src, float *dst, int size, float* stenci
     #pragma unroll
     for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * __ldg(&stencilWeight[i+10]);
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -65,7 +65,7 @@ __global__ void stencilReadOnly2(float *src, float *dst, int size, float* stenci
     #pragma unroll
     for(int i = -10;i < 10; i++)
     {
-        out += __ldg(&src[idx+i]) * stencilWeight[i+10];
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -81,7 +81,7 @@ __global__ void stencilReadOnly3(float *src, float *dst, int size, float* stenci
     #pragma unroll
     for(int i = -10;i < 10; i++)
     {
-        out += __ldg(&src[idx+i]) * __ldg(&stencilWeight[i+10]);
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -113,7 +113,7 @@ __global__ void stencilConst2(float *src, float *dst, int size)
     #pragma unroll
     for(int i = -10;i < 10; i++)
     {
-        out += __ldg(&src[idx+i]) * const_stencilWeight[i+10];
+        out += src[idx+i] * const_stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -148,7 +148,7 @@ __global__ void stencilShared2(float *src, float *dst, int size)
     __shared__ float buffer[1024+21];
     for(int i = threadIdx.x; i < 1024+21; i = i + 1024)
     {
-        buffer[i] = __ldg(&src[idx+i]);
+        buffer[i] = src[idx+i];
     }
     idx += 11;
     if (idx >= size)
@@ -175,6 +175,7 @@ bool verify(float *arr, float *corr, int count)
             exit(1);
         }
     }
+    return true;
 }
 
 int main()
