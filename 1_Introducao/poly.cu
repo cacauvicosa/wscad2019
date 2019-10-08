@@ -15,7 +15,6 @@ __global__ void poli1(float* poli, const int N) {
     float x = poli[idx];
     
     if (idx < N) {
-        
         poli[idx] = 3 * x * x - 7 * x + 5;
     }
 }
