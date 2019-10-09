@@ -86,7 +86,7 @@ int main(void) {
     printf("Blocks            = %d\n",GRID_SIZE);
     printf("Threads per block = %d\n",BLOCK_SIZE);
     printf("Total threads     = %d\n",GRID_SIZE*BLOCK_SIZE);
-    printf("GOPS              = %d\n",N/elapsed_time/1000000000);
+    printf("GOPS              = %.2f\n",N*1.0/elapsed_time/1000000000);
 
     // Verify results
     verify(h_in, h_out, N);
