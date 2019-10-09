@@ -24,6 +24,22 @@ void verify(int *h_in, int *h_out, int N) {
     }
 }
 
+cudaEvent_t start, stop;
+float elapsed_time;
+
+void start_event() {
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);   
+    cudaEventRecord(stop, 0);
+}
+
+void end_event(char* name) {
+	cudaEventSynchronize(stop);
+    cudaEventElapsedTime(&elapsed_time, start, stop);
+    printf("\n%s - Execution time = %.6fms\n", name, elapsed_time);
+}
+
 int main(void) {
     
     int *h_in, *h_out; // host copies of a, b, c
@@ -33,15 +49,7 @@ int main(void) {
 
     int size = N * sizeof(int);
 
-    // Apply stencil by launching a sufficient number of blocks
-    printf("---------------------------\n");
-    printf("Launching 1D stencil kernel\n");
-    printf("---------------------------\n");
-    printf("Vector length     = %d (%d MB)\n",N,size/1024/1024);
-    printf("Stencil radius    = %d\n",RADIUS);
-    printf("Blocks            = %d\n",GRID_SIZE);
-    printf("Threads per block = %d\n",BLOCK_SIZE);
-    printf("Total threads     = %d\n",GRID_SIZE*BLOCK_SIZE);
+    
     
     // Alloc space for device copies of a, b, c
     cudaMalloc((void **)&d_in, size);
@@ -61,11 +69,24 @@ int main(void) {
     cudaMemcpy(d_out, h_out, size, cudaMemcpyHostToDevice);
     
     // Launch stencil_1d kernel on GPU
+    start_event();
     stencil_1d<<<GRID_SIZE,BLOCK_SIZE>>>(d_in, d_out, N);
+    end_event("Stencil_1d");
     cudaDeviceSynchronize(); 
     
     // Copy result back to host
     cudaMemcpy(h_out, d_out, size, cudaMemcpyDeviceToHost);
+
+    // Apply stencil by launching a sufficient number of blocks
+    printf("---------------------------\n");
+    printf("Launching 1D stencil kernel\n");
+    printf("---------------------------\n");
+    printf("Vector length     = %d (%d MB)\n",N,size/1024/1024);
+    printf("Stencil radius    = %d\n",RADIUS);
+    printf("Blocks            = %d\n",GRID_SIZE);
+    printf("Threads per block = %d\n",BLOCK_SIZE);
+    printf("Total threads     = %d\n",GRID_SIZE*BLOCK_SIZE);
+    printf("GOPS              = %d\n",N/elapsed_time/1000000000);
 
     // Verify results
     verify(h_in, h_out, N);
