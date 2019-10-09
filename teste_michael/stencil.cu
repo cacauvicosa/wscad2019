@@ -3,8 +3,9 @@
 #include <chrono>
 
 __constant__ float const_stencilWeight[2*raio+1];
-#define raio 10
-#define tamanho 2 << 20
+
+#define raio 10;
+#define tamanho 2 << 20;
 
 // base case
 __global__ void stencil(float *src, float *dst, int size, float *stencilWeight)
