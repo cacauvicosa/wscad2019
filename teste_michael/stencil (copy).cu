@@ -2,22 +2,20 @@
 #include <cuda_runtime_api.h>
 #include <chrono>
 
-__constant__ float const_stencilWeight[2*raio+1];
-#define raio 10
-#define tamanho 2 << 20
+__constant__ float const_stencilWeight[21];
 
 // base case
 __global__ void stencil(float *src, float *dst, int size, float *stencilWeight)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * stencilWeight[i+raio];
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -26,14 +24,14 @@ __global__ void stencil(float *src, float *dst, int size, float *stencilWeight)
 __global__ void stencilReadOnly1(float *src, float *dst, int size, float* stencilWeight)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * stencilWeight[i+raio];
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -42,14 +40,14 @@ __global__ void stencilReadOnly1(float *src, float *dst, int size, float* stenci
 __global__ void stencilReadOnly2(float *src, float *dst, int size, float* stencilWeight)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * stencilWeight[i+raio];
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -58,14 +56,14 @@ __global__ void stencilReadOnly2(float *src, float *dst, int size, float* stenci
 __global__ void stencilReadOnly3(float *src, float *dst, int size, float* stencilWeight)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * stencilWeight[i+raio];
+        out += src[idx+i] * stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -74,14 +72,14 @@ __global__ void stencilReadOnly3(float *src, float *dst, int size, float* stenci
 __global__ void stencilConst1(float *src, float *dst, int size)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * const_stencilWeight[i+raio];
+        out += src[idx+i] * const_stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -90,14 +88,14 @@ __global__ void stencilConst1(float *src, float *dst, int size)
 __global__ void stencilConst2(float *src, float *dst, int size)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += src[idx+i] * const_stencilWeight[i+raio];
+        out += src[idx+i] * const_stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -106,21 +104,21 @@ __global__ void stencilConst2(float *src, float *dst, int size)
 __global__ void stencilShared1(float *src, float *dst, int size)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    __shared__ float buffer[1024+2*raio+1];
+    __shared__ float buffer[1024+21];
     for(int i = threadIdx.x; i < 1024+21; i = i + 1024)
     {
         buffer[i] = src[idx+i];
     }
-    idx += raio+1;
+    idx += 11;
     if (idx >= size)
         return;
     
     __syncthreads();
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += buffer[threadIdx.x+raio+i] * const_stencilWeight[i+raio];
+        out += buffer[threadIdx.x+10+i] * const_stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -129,21 +127,21 @@ __global__ void stencilShared1(float *src, float *dst, int size)
 __global__ void stencilShared2(float *src, float *dst, int size)
 {
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
-    __shared__ float buffer[1024+2*raio+1];
+    __shared__ float buffer[1024+21];
     for(int i = threadIdx.x; i < 1024+21; i = i + 1024)
     {
         buffer[i] = src[idx+i];
     }
-    idx += raio;
+    idx += 11;
     if (idx >= size)
         return;
     
     __syncthreads();
     float out = 0;
     #pragma unroll
-    for(int i = -raio;i < raio; i++)
+    for(int i = -10;i < 10; i++)
     {
-        out += buffer[threadIdx.x+raio+i] * const_stencilWeight[i+raio];
+        out += buffer[threadIdx.x+10+i] * const_stencilWeight[i+10];
     }
     dst[idx] = out;
 }
@@ -151,7 +149,7 @@ __global__ void stencilShared2(float *src, float *dst, int size)
 bool verify(float *arr, float *corr, int count)
 {
     // skip the first elements since they may be wrong
-    for(int i = raio+1; i < count; i++)
+    for(int i = 11; i < count; i++)
     {
         if(arr[i] != corr[i])
         {   
@@ -169,25 +167,25 @@ int main()
     float *bOut;
     float *bCorr;
     float *weights;
-    (cudaMalloc(&a, sizeof(float)*tamanho));
-    (cudaMalloc(&b, sizeof(float)*tamanho));
-    (cudaMallocHost(&bOut, sizeof(float)*tamanho));
-    (cudaMallocManaged(&bCorr, sizeof(float)*tamanho));
-    (cudaMallocManaged(&weights, sizeof(float)*(2*raio+1)));
+    (cudaMalloc(&a, sizeof(float)*102400000));
+    (cudaMalloc(&b, sizeof(float)*102400000));
+    (cudaMallocHost(&bOut, sizeof(float)*102400000));
+    (cudaMallocManaged(&bCorr, sizeof(float)*102400000));
+    (cudaMallocManaged(&weights, sizeof(float)*21));
 
     cudaDeviceSynchronize();    
 
-    for(int i = 0; i < tamanho;i++)
+    for(int i = 0; i < 102400000;i++)
     {
         //a[i] = 0;
         //b[i] = 0;
         bCorr[i] = 0;
     }
 
-    cudaMemset(a, 1, tamanho);
-    cudaMemset(b, 1, tamanho);
-    cudaMemset(bCorr, 1, tamanho);
-    cudaMemset(bOut, 1, tamanho);
+    cudaMemset(a, 1, 102400000);
+    cudaMemset(b, 1, 102400000);
+    cudaMemset(bCorr, 1, 102400000);
+    cudaMemset(bOut, 1, 102400000);
 
     cudaDeviceSynchronize();    
     
@@ -201,15 +199,15 @@ int main()
 
 
     // copy to constant memory    
-    cudaMemcpyToSymbol(const_stencilWeight, weights, sizeof(float)*(2*raio+1));
+    cudaMemcpyToSymbol(const_stencilWeight, weights, sizeof(float)*21);
 
     // run the basic case once to get the "correct" results
-    ((stencil<<<blocks, blockSize>>>(a, bCorr, tamanho, weights)));
+    ((stencil<<<blocks, blockSize>>>(a, bCorr, 10240000, weights)));
     cudaDeviceSynchronize();    
 
-    ((stencil<<<blocks, blockSize>>>(a, b, tamanho, weights)));
+    ((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
     cudaDeviceSynchronize(); 
-    (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+    (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
     verify(bOut, bCorr, 1000);
 
     cudaSetDevice(0); 
@@ -220,11 +218,11 @@ int main()
     {
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencil<<<blocks, blockSize>>>(a, b, tamanho, weights)));
+        ((stencil<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -239,11 +237,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilReadOnly1<<<blocks, blockSize>>>(a, b, tamanho, weights)));
+        ((stencilReadOnly1<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -256,11 +254,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilReadOnly2<<<blocks, blockSize>>>(a, b, tamanho, weights)));
+        ((stencilReadOnly2<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -273,11 +271,11 @@ int main()
         cudaDeviceSynchronize();  
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilReadOnly3<<<blocks, blockSize>>>(a, b, tamanho, weights)));
+        ((stencilReadOnly3<<<blocks, blockSize>>>(a, b, 10240000, weights)));
         cudaDeviceSynchronize();  
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
         
 	    std::chrono::duration<float> elapsed_seconds = end-start;
@@ -294,11 +292,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilConst1<<<blocks, blockSize>>>(a, b, tamanho)));
+        ((stencilConst1<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
 
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -314,11 +312,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilConst2<<<blocks, blockSize>>>(a, b, tamanho)));
+        ((stencilConst2<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
 
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -334,11 +332,11 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilShared1<<<blocks, blockSize>>>(a, b, tamanho)));
+        ((stencilShared1<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
@@ -352,16 +350,17 @@ int main()
         
         std::chrono::time_point<std::chrono::system_clock> start, end;
 	    start = std::chrono::system_clock::now();
-        ((stencilShared2<<<blocks, blockSize>>>(a, b, tamanho)));
+        ((stencilShared2<<<blocks, blockSize>>>(a, b, 10240000)));
         cudaDeviceSynchronize();    
         end = std::chrono::system_clock::now();
         
-        (cudaMemcpy(bOut, b, sizeof(float)*tamanho, cudaMemcpyDefault));
+        (cudaMemcpy(bOut, b, sizeof(float)*10240000, cudaMemcpyDefault));
         verify(bOut, bCorr, 1000);  
 	    std::chrono::duration<float> elapsed_seconds = end-start;
         minTime = std::min(elapsed_seconds.count(), minTime);
     }
     std::cout << "constant memory coefficients and data from shared thorugh read only " << (blockSize*blocks)/minTime << " updates/s" << std::endl;
     minTime = 10000;
+
 
 }
