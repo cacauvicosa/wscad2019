@@ -59,9 +59,27 @@ __global__ void stencil_1d(int *in, int *out, int dim) {
   }
 }
 
+cudaEvent_t start, stop;
+
+void start_event() {
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+    cudaEventRecord(start, 0);   
+    cudaEventRecord(stop, 0);
+}
+
+void end_event(char* name) {
+	float elapsed_time;
+	cudaEventSynchronize(stop);
+  // calculate elapsed time
+  cudaEventElapsedTime(&elapsed_time, start, stop);
+  printf("\n%s - Execution time = %.6fms\n", name, elapsed_time);
+}
+    
+
 void verify(int *h_in, int *h_out, int N) {
     int i, j, ij, result, err;
-    // check results
+    //  results
     err = 0;
     for (i=0; i < N; i++){
         result = 0;
@@ -96,7 +114,7 @@ int main(void) {
 
     // Apply stencil by launching a sufficient number of blocks
     printf("---------------------------\n");
-    printf("Launching 1D stencil kernel\n");
+    printf(" Data                       \n");
     printf("---------------------------\n");
     printf("Vector length     = %d (%d MB)\n",N,size/1024/1024);
     printf("Stencil radius    = %d\n",RADIUS);
@@ -122,7 +140,9 @@ int main(void) {
     cudaMemcpy(d_out, h_out, size, cudaMemcpyHostToDevice);
     
     // Launch stencil_1d kernel on GPU
+    start_event();
     stencil_1d<<<GRID_SIZE,BLOCK_SIZE>>>(d_in, d_out, N);
+    end_event("Stencil_1d");
     cudaDeviceSynchronize(); 
     
     // Copy result back to host
