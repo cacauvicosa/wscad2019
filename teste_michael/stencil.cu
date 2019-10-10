@@ -72,7 +72,7 @@ int main(void) {
     start_event();
     stencil_1d<<<GRID_SIZE,BLOCK_SIZE>>>(d_in, d_out, N);
     end_event("Stencil_1d");
-    cudaDeviceSynchronize(); 
+
     
     // Copy result back to host
     cudaMemcpy(h_out, d_out, size, cudaMemcpyDeviceToHost);
