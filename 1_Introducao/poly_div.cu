@@ -90,11 +90,11 @@ void start_event() {
     
 }
 
-void end_event(char* name) {
+void end_event() {
     cudaEventRecord(stop, 0);
     cudaEventSynchronize(stop);
     cudaEventElapsedTime(&elapsed_time, start, stop);
-    printf("\n%s - Execution time = %.6fms\n", name, elapsed_time);
+    printf("Execution time = %.6fms\n", name, elapsed_time);
 }
 
 int main() {
@@ -126,45 +126,45 @@ int main() {
 
     start_event();
     poly_div2<<<grid, block>>>(d_polinomy, nElem); 
-    end_event("poli2");
+    printf("poli2 "); end_event();
     cudaDeviceSynchronize(); 
     printf("poli2[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x*0.2;\n");
 
     start_event();
     poly_div1<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli1");
+    printf("poli1 "); end_event();
     cudaDeviceSynchronize(); 
     printf("poli1[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+x/5.0;\n");
   
     
     start_event();
     poly_div3<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli3"); 
+    printf("poli3 "); end_event();
     printf("poli3[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+5.0/x;\n");
    
     start_event();
     poly_div4<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli4");
+    printf("poli4 "); end_event();
     printf("float y = 5.0/x; \n poli4[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+y;\n");
    
     start_event();
     poly_div5<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli5");
+    printf("poli5 "); end_event();
     printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+1.0/x;\n");
     
     start_event();
     poly_div6<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli6");
+    printf("poli6 "); end_event();
     printf("float y = 1.0/x;\npoli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+y;\n");
 
     start_event();
     poly_div7<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli7");
+    printf("poli7" ); end_event();
     printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+1.0f/x;\n");
 
     start_event();
     poly_div8<<<grid, block>>>(d_polinomy, nElem);
-    end_event("poli8");
+    printf("poli8 "); end_event();
     printf("poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))+5.0f/x;\n");
      
     
