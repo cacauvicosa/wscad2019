@@ -87,11 +87,12 @@ void start_event() {
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
     cudaEventRecord(start, 0);   
-    cudaEventRecord(stop, 0);
+    
 }
 
 void end_event(char* name) {
-	cudaEventSynchronize(stop);
+    cudaEventRecord(stop, 0);
+    cudaEventSynchronize(stop);
     cudaEventElapsedTime(&elapsed_time, start, stop);
     printf("\n%s - Execution time = %.6fms\n", name, elapsed_time);
 }
