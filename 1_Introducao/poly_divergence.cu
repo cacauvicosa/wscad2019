@@ -46,6 +46,7 @@ int main() {
     int iLen = 512;
     dim3 block (iLen);
     dim3 grid  ((nElem + block.x - 1) / block.x);
+    cudaMemcpy(h_polinomy, d_polinomy, nBytes, cudaMemcpyHostToDevice);
     poli_warp<<<grid, block>>>(d_polinomy, nElem);
     poli_warp<<<grid, block>>>(d_polinomy, nElem);
 
@@ -75,7 +76,7 @@ int main() {
     printf("With Divergence - Measured time for parallel execution = %.6fms\n",
            elapsed_time );
 
-    cudaMemcpy(h_polinomy, d_polinomy, nBytes, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_polinomy, h_polinomy, nBytes, cudaMemcpyDeviceToHost);
     
     
     cudaFree(d_polinomy);
