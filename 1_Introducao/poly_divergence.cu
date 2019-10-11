@@ -35,7 +35,7 @@ int main() {
     int iLen = 512;
     dim3 block (iLen);
     dim3 grid  ((nElem + block.x - 1) / block.x);
-
+    poli_without_divergence<<<grid, block>>>(d_polinomy, nElem);
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
