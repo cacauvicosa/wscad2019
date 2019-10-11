@@ -11,6 +11,17 @@
  */
 
 
+__global__ void poli_warp(float* poli, const int N) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    
+    float x; 
+    if (idx < N) {
+       x = poli[idx];
+       poli[idx] = 5 + x * ( 7 - x * (9 + x * (5 + x * (5 + x))))- 1.0f/x + 3.0f/(x*x) + x/5.0f;                 
+    }
+    poli[idx] = x;
+}
+
 int main() {
     int nElem = 1 << POWER;
     float elapsed_time;
@@ -35,7 +46,8 @@ int main() {
     int iLen = 512;
     dim3 block (iLen);
     dim3 grid  ((nElem + block.x - 1) / block.x);
-    poli_without_divergence<<<grid, block>>>(d_polinomy, nElem);
+    poli_warp<<<grid, block>>>(d_polinomy, nElem);
+    poli_warp<<<grid, block>>>(d_polinomy, nElem);
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
