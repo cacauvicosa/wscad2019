@@ -66,7 +66,8 @@ int main() {
     printf("Without divergence - Measured time for parallel execution = %.6fms\n",
            elapsed_time );
  
-    cudaMemcpy(h_polinomy, d_polinomy, nBytes, cudaMemcpyDeviceToHost);
+    cudaMemcpy(d_polinomy, h_polinomy, nBytes, cudaMemcpyHostToDevice);
+ cudaDeviceSynchronize(); 
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
     // record start event
