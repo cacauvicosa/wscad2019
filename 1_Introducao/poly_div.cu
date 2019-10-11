@@ -99,7 +99,6 @@ void end_event() {
 
 int main() {
     int nElem = 1 << 27;
-    float elapsed_time;
 
     // set up device
     int dev = 0;
